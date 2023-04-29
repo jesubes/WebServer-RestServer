@@ -70,6 +70,8 @@ const usuariosPatch = ( req, res = response ) => {
 const usuariosDelete = async( req, res = response ) => {
 
   const { id } = req.params;
+
+  const uid = req.uid;
   
   //Fisicamente lo borramos con lo siguiente
   // const usuario = await Usuario.findByIdAndDelete( id )
@@ -77,8 +79,14 @@ const usuariosDelete = async( req, res = response ) => {
   // (INTEGRIDAD REFERENCIAL) borrar usuario de forma que no afecte las referencias de otras colecciones que interactuo el usuario borrado
   const usuario = await Usuario.findByIdAndUpdate( id, { estado: false })
 
+
+  // const usuarioAutenticado = req.usuario
+
+
+
   res.json({
-    usuario
+    usuario,
+    // usuarioAutenticado
   })
 }
 

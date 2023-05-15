@@ -1,5 +1,5 @@
-const Role = require("../models/role");
-const Usuario = require('../models/usuario');
+const { Categoria, Role, Usuario, Producto } = require("../models");
+
 
 
 const esRoleValido = async (rol = "") => {
@@ -9,6 +9,9 @@ const esRoleValido = async (rol = "") => {
     throw new Error(`El rol ${rol} no está registrado en la BD`);
   }
 };
+
+
+
 
 const emailExite = async (correo = '') => {
   const existeEmail = await Usuario.findOne({ correo });
@@ -22,7 +25,10 @@ const emailExite = async (correo = '') => {
 };
 
 
+
+
 const existeUsuarioPorId  = async ( id = '') => {
+  
   const existeUsuario = await Usuario.findById( id );
 
   if ( !existeUsuario ) {
@@ -31,8 +37,32 @@ const existeUsuarioPorId  = async ( id = '') => {
 };
 
 
+
+/* 
+* Validadores de CATEGORIAS
+*/
+const existeCategoriaPorId = async ( id = '') =>{
+  const categoriaExiste = await Categoria.findById( id )
+  if( !categoriaExiste ){
+    throw new Error(`No exite la Categoria con id: ${ id }, en la BD`)
+  }
+
+}
+
+
+
+//Validadores de Productos
+const existeProductoPorId = async ( id = '') =>{
+  const productoExiste = await Producto.findById( id )
+  if ( !productoExiste ) {
+    throw new Error (`No exite el producto con id: ${ id }, en la DB`)
+  }
+}
+
 module.exports = {
   esRoleValido,
   emailExite,
   existeUsuarioPorId,
+  existeCategoriaPorId,
+  existeProductoPorId
 };

@@ -12,7 +12,6 @@ const esRoleValido = async (rol = "") => {
 
 
 
-
 const emailExite = async (correo = '') => {
   const existeEmail = await Usuario.findOne({ correo });
   if (existeEmail) {
@@ -23,7 +22,6 @@ const emailExite = async (correo = '') => {
     // });
   }
 };
-
 
 
 
@@ -59,10 +57,27 @@ const existeProductoPorId = async ( id = '') =>{
   }
 }
 
+
+//validadores de colecciones permitidas
+const coleccionesPermitidas = ( coleccion = '', colecciones = []) => {
+
+  const incluida = colecciones.includes( coleccion )
+
+  if( !incluida ) {
+    throw new Error (`La colección ${ coleccion } no es permitida -- ${ colecciones }`)
+  }
+
+  return true;
+
+}
+
+
+
 module.exports = {
   esRoleValido,
   emailExite,
   existeUsuarioPorId,
   existeCategoriaPorId,
-  existeProductoPorId
+  existeProductoPorId,
+  coleccionesPermitidas,
 };

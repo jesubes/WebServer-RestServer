@@ -5,6 +5,7 @@ const cloudinary = require('cloudinary').v2
   //configurar nuestra cuenta
   cloudinary.config( process.env.CLOUDINARY_URL )
 
+const https = require('https')
 
 const { subirArchivo } = require('../helpers');
 
@@ -190,9 +191,61 @@ const actualizarImagenCloudinary = async ( req = request, res = response ) =>{
 }
 
 
+//monstrar iamgen con cloudinary
+const mostarImagenCoudinary = async( req, res = response ) =>{
+  
+  const { id, coleccion } = req.params
+
+  let modelo;
+
+  switch ( coleccion ) {
+    case 'usuarios':
+      modelo = await Usuario.findById( id )
+      if( !modelo ){
+        return res.status( 400 ).json({
+          msg: `No existe un usuario con el id ${ id }`,
+        })
+      }
+    break;
+    
+    case 'productos':
+      modelo = await Producto.findById( id )
+      if( !modelo ){
+        return res.status( 400 ).json({
+          msg: `No existe un productos con el id ${ id }`,
+        })
+      }
+    break;
+
+    default:
+      return res.status( 500 ).json({ msg: 'se me olvidó validar esto'})
+  }
+
+  //***************************** */
+  //Servir imagen con una direccion https
+  if( modelo.img ){
+    //configurar la respuesta para que sea una imagen 
+    res.setHeader('Content-Type','image/jpeg')
+
+    https.get( modelo.img, respuesta =>{
+      respuesta.pipe( res )
+    })
+
+    return true
+  }
+
+  const pathImage = path.join( __dirname, '../assets/no-image.jpg')
+  if( fs.existsSync( pathImage )){
+    return res.send( pathImage )
+  }
+}
+
+
+
 module.exports = {
   cargarArchivo,
   actualizarImagen,
   mostarImagen,
   actualizarImagenCloudinary,
+  mostarImagenCoudinary,
 }
